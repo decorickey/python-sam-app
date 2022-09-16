@@ -4,8 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pipenv = "*"
+requests = "*"
+bs4 = "*"
 
 [dev-packages]
+isort = "*"
 
 [requires]
 python_version = "3.9"
