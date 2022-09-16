@@ -26,6 +26,21 @@ Resources:
             Path: /hello
             Method: get
 
+  BmonsterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bmonster/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /bmonster
+            Method: get
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
