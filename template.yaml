@@ -26,20 +26,12 @@ Resources:
             Path: /hello
             Method: get
 
-  BmonsterFunction:
-    Type: AWS::Serverless::Function
+  BmonsterApplication:
+    Type: AWS::Serverless::Application
     Properties:
-      CodeUri: bmonster/
-      Handler: app.lambda_handler
-      Runtime: python3.9
-      Architectures:
-        - x86_64
-      Events:
-        HelloWorld:
-          Type: Api
-          Properties:
-            Path: /bmonster
-            Method: get
+      Location: ./bmonster/template.yaml
+      Parameters:
+        Key: Value
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
