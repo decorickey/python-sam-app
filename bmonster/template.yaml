@@ -5,33 +5,61 @@ Description: >
 
   Sample SAM Template for python-sam-app
 
+Parameters:
+  Env:
+    Type: String
+    Default: local
+    AllowedValues:
+      - local
+      - develop
+      - staging
+      - production
+
+Mappings:
+  local:
+    Aws:
+      Region: ap-northeast-1
+      DynamoDBHost: http://dynamodb-local:8000
+      DynamoDBBillingMode: PAY_PER_REQUEST
+  develop:
+    Aws:
+      Region: ap-northeast-1
+      DynamoDBHost: ""
+      DynamoDBBillingMode: PAY_PER_REQUEST
+
 Globals:
   Function:
     Timeout: 3
+    Runtime: python3.9
+    Environment:
+      Variables:
+        ENV: !Ref Env
+        REGION: !FindInMap [!Ref Env, Aws, Region]
+        DYNAMODB_HOST: !FindInMap [!Ref Env, Aws, DynamoDBHost]
+        BILLING_MODE: !FindInMap [!Ref Env, Aws, DynamoDBBillingMode]
 
 Resources:
-  BmonsterFunction:
+  BmonsterScrapingFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Handler: app.lambda_handler
-      Runtime: python3.9
-      Architectures:
-        - x86_64
+      Handler: app.scraping.lambda_handler
+      Timeout: 300
+      Policies:
+        - AmazonDynamoDBFullAccess
       Events:
-        Bmonster:
-          Type: Api
+        Schedule:
+          Type: Schedule
           Properties:
-            Path: /bmonster
-            Method: get
+            Schedule: "cron(1 15 * * ? *)"
 
 Outputs:
   BmonsterApi:
     Description: "API Gateway endpoint URL for Prod stage for b-monster function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/bmonster/"
-  BmonsterFunction:
+  BmonsterScrapingFunction:
     Description: "b-monster Lambda Function ARN"
-    Value: !GetAtt BmonsterFunction.Arn
-  BmonsterFunctionIamRole:
+    Value: !GetAtt BmonsterScrapingFunction.Arn
+  BmonsterScrapingFunctionIamRole:
     Description: "Implicit IAM Role created for b-monster function"
-    Value: !GetAtt BmonsterFunctionRole.Arn
+    Value: !GetAtt BmonsterScrapingFunctionRole.Arn
