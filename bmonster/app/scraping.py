@@ -7,9 +7,9 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
+from .api.schemas import ScheduleResponse
 from .common.constants import JST, URL, StudioCodeList
 from .dynamodb.models import Performer, Program, Schedule, dynamodb_migrate
-from .api.schemas import ScheduleResponse
 
 
 def lambda_handler(event, context):
