@@ -53,6 +53,21 @@ Resources:
           Properties:
             Schedule: "cron(1 15 * * ? *)"
 
+  BmonsterScheduleApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: app.schedule.lambda_handler
+      Timeout: 30
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /bmonster/schedule
+            Method: get
+
 Outputs:
   BmonsterApi:
     Description: "API Gateway endpoint URL for Prod stage for b-monster function"
@@ -63,3 +78,9 @@ Outputs:
   BmonsterScrapingFunctionIamRole:
     Description: "Implicit IAM Role created for b-monster function"
     Value: !GetAtt BmonsterScrapingFunctionRole.Arn
+  BmonsterScheduleApiFunction:
+    Description: "b-monster Lambda Function ARN"
+    Value: !GetAtt BmonsterScheduleApiFunction.Arn
+  BmonsterScheduleApiFunctionIamRole:
+    Description: "Implicit IAM Role created for b-monster function"
+    Value: !GetAtt BmonsterScheduleApiFunctionRole.Arn

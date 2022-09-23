@@ -21,3 +21,11 @@ pipenv requirements > bmonster/requirements.txt
 sam build BmonsterScrapingFunction
 sam local invoke --docker-network python-sam-app_default BmonsterScrapingFunction
 ```
+
+### BmonsterScheduleApiFunction
+
+```shell
+sam build BmonsterScheduleApiFunction
+sam local invoke --docker-network python-sam-app_default BmonsterScheduleApiFunction -e events/event.json
+sam local start-api --docker-network python-sam-app_default
+```

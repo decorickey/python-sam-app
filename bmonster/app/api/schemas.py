@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -10,3 +10,8 @@ class ScheduleResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ProgramRequest(BaseModel):
+    performer: Optional[str] = None
+    vol: Optional[str] = None
