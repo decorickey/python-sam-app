@@ -39,11 +39,23 @@ Globals:
         BILLING_MODE: !FindInMap [!Ref Env, Aws, DynamoDBBillingMode]
 
 Resources:
+  RequirementsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: requirements/
+      CompatibleRuntimes:
+        - python3.9
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: python3.9
+
   BmonsterScrapingFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: ./
       Handler: app.scraping.lambda_handler
+      Layers:
+        - !Ref RequirementsLayer
       Timeout: 300
       Policies:
         - AmazonDynamoDBFullAccess
@@ -56,8 +68,10 @@ Resources:
   BmonsterScheduleApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: ./
       Handler: app.schedule.lambda_handler
+      Layers:
+        - !Ref RequirementsLayer
       Timeout: 30
       Policies:
         - AmazonDynamoDBFullAccess

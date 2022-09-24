@@ -12,7 +12,7 @@
 ## BmonsterApplication
 
 ```shell
-pipenv requirements > bmonster/requirements.txt
+pipenv requirements > bmonster/requirements/requirements.txt
 ```
 
 ### BmonsterScrapingFunction
