@@ -14,8 +14,9 @@ def dynamodb_migrate():
     if not Program.exists():
         Program.create_table()
 
-    if not Schedule.exists():
-        Schedule.create_table()
+    # スケジュールは毎回最新化する
+    Schedule.delete_table()
+    Schedule.create_table()
 
     # if not ProgramReviewIndex.exists():
     #     ProgramReviewIndex.create_table()
