@@ -82,6 +82,23 @@ Resources:
             Path: /bmonster/schedule
             Method: get
 
+  BmonsterProgramApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.program.lambda_handler
+      Layers:
+        - !Ref RequirementsLayer
+      Timeout: 30
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /bmonster/program
+            Method: get
+
 Outputs:
   BmonsterApi:
     Description: "API Gateway endpoint URL for Prod stage for b-monster function"
@@ -98,3 +115,9 @@ Outputs:
   BmonsterScheduleApiFunctionIamRole:
     Description: "Implicit IAM Role created for b-monster function"
     Value: !GetAtt BmonsterScheduleApiFunctionRole.Arn
+  BmonsterProgramApiFunction:
+    Description: "b-monster Lambda Function ARN"
+    Value: !GetAtt BmonsterProgramApiFunction.Arn
+  BmonsterProgramApiFunctionIamRole:
+    Description: "Implicit IAM Role created for b-monster function"
+    Value: !GetAtt BmonsterProgramApiFunctionRole.Arn

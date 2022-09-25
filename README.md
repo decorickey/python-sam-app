@@ -29,3 +29,11 @@ sam build BmonsterScheduleApiFunction
 sam local invoke --docker-network python-sam-app_default BmonsterScheduleApiFunction -e events/event.json
 sam local start-api --docker-network python-sam-app_default
 ```
+
+### BmonsterProgramApiFunction
+
+```shell
+sam build BmonsterProgramApiFunction
+sam local invoke --docker-network python-sam-app_default BmonsterProgramApiFunction -e events/event.json
+sam local start-api --docker-network python-sam-app_default
+```

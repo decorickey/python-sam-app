@@ -12,6 +12,9 @@ class ScheduleResponse(BaseModel):
         orm_mode = True
 
 
-class ProgramRequest(BaseModel):
+class ProgramItem(BaseModel):
     performer: Optional[str] = None
     vol: Optional[str] = None
+
+    class Config:
+        orm_mode = True

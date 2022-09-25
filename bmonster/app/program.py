@@ -2,8 +2,8 @@ import json
 from datetime import timedelta, timezone
 from typing import List
 
-from .api.schemas import ProgramItem, ScheduleResponse
-from .dynamodb.models import Schedule
+from .api.schemas import ProgramItem
+from .dynamodb.models import Program
 
 JST = timezone(timedelta(hours=9))
 
@@ -29,12 +29,12 @@ def lambda_handler(event, context):
 def get(req: ProgramItem) -> List[dict]:
     if req.performer and req.vol:
         try:
-            schedule_list = [Schedule.get(req.performer, req.vol)]
-        except Schedule.DoesNotExist:
+            program_list = [Program.get(req.performer, req.vol)]
+        except Program.DoesNotExist:
             return []
     elif req.performer:
-        schedule_list = Schedule.query(req.performer)
+        program_list = Program.query(req.performer)
     else:
-        schedule_list = Schedule.scan()
+        program_list = Program.scan()
 
-    return [ScheduleResponse.from_orm(schedule).dict() for schedule in schedule_list]
+    return [ProgramItem.from_orm(program).dict() for program in program_list]
