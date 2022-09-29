@@ -15,7 +15,8 @@ def dynamodb_migrate():
         Program.create_table()
 
     # スケジュールは毎回最新化する
-    Schedule.delete_table()
+    if Schedule.exists():
+        Schedule.delete_table()
     Schedule.create_table()
 
 
@@ -40,9 +41,9 @@ class Program(Model):
     class Meta(BaseMeta):
         table_name = 'program'
 
-    performer = UnicodeAttribute(hash_key=True)
+    performer_name = UnicodeAttribute(hash_key=True)
     vol = UnicodeAttribute(range_key=True)
-    old_vol = UnicodeAttribute()
+    old_vol = UnicodeAttribute(null=True)
     ttl = TTLAttribute(default=datetime.now(JST) + timedelta(days=365))
 
 
@@ -50,9 +51,9 @@ class Schedule(Model):
     class Meta(BaseMeta):
         table_name = 'schedule'
 
-    performer = UnicodeAttribute(hash_key=True)
+    performer_name = UnicodeAttribute(hash_key=True)
     vol = UnicodeAttribute(range_key=True)
-    schedule_list = ListAttribute()
+    schedule_list = ListAttribute(null=True)
     ttl = TTLAttribute(default=datetime.now(JST) + timedelta(days=7))
 
 
@@ -60,6 +61,6 @@ class ProgramReview(Model):
     class Meta(BaseMeta):
         table_name = 'program_review'
 
-    performer = UnicodeAttribute(hash_key=True)
+    performer_name = UnicodeAttribute(hash_key=True)
     vol = UnicodeAttribute(range_key=True)
     star = NumberAttribute()

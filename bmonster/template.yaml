@@ -82,6 +82,23 @@ Resources:
             Path: /bmonster/schedule
             Method: get
 
+  BmonsterPerformerApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.performer.lambda_handler
+      Layers:
+        - !Ref BmonsterRequirementsLayer
+      Timeout: 30
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /bmonster/performer
+            Method: get
+
   BmonsterProgramApiFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -142,6 +159,12 @@ Outputs:
   BmonsterScheduleApiFunctionIamRole:
     Description: "Implicit IAM Role created for b-monster function"
     Value: !GetAtt BmonsterScheduleApiFunctionRole.Arn
+  BmonsterPeformerApiFunction:
+    Description: "b-monster Lambda Function ARN"
+    Value: !GetAtt BmonsterPerformerApiFunction.Arn
+  BmonsterPerformerApiFunctionIamRole:
+    Description: "Implicit IAM Role created for b-monster function"
+    Value: !GetAtt BmonsterPerformerApiFunctionRole.Arn
   BmonsterProgramApiFunction:
     Description: "b-monster Lambda Function ARN"
     Value: !GetAtt BmonsterProgramApiFunction.Arn

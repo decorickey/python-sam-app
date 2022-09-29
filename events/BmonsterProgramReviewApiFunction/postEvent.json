@@ -1,5 +1,5 @@
 {
-  "body": "{\"user_id\": \"aaa\", \"performer\": \"KAORI\", \"vol\": \"MIX3\", \"star\": \"3\"}",
+  "body": "{\"user_id\": \"aaa\", \"performer_name\": \"KAORI\", \"vol\": \"MIX3\", \"star\": \"3\"}",
   "resource": "/bmonster/programReview",
   "path": "/bmonster/programReview",
   "httpMethod": "POST",

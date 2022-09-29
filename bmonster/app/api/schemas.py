@@ -4,16 +4,23 @@ from pydantic import BaseModel, Field
 
 
 class ScheduleResponse(BaseModel):
-    performer: str
+    performer_name: str
     vol: str
-    scheduleList: List[dict] = Field(..., alias="schedule_list")
+    scheduleList: Optional[list[dict]] = Field(..., alias="schedule_list")
+
+    class Config:
+        orm_mode = True
+
+
+class PerformerResponse(BaseModel):
+    name: str
 
     class Config:
         orm_mode = True
 
 
 class ProgramItem(BaseModel):
-    performer: Optional[str] = None
+    performer_name: Optional[str] = None
     vol: Optional[str] = None
     old_vol: Optional[str] = None
 
@@ -23,13 +30,13 @@ class ProgramItem(BaseModel):
 
 class ProgramReviewRequest(BaseModel):
     user_id: str
-    performer: Optional[str] = None
+    performer_name: Optional[str] = None
     vol: Optional[str] = None
     star: Optional[int] = None
 
 
 class ProgramReviewResponse(BaseModel):
-    performer: Optional[str] = None
+    performer_name: Optional[str] = None
     vol: Optional[str] = None
     star: Optional[int] = None
 

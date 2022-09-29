@@ -34,13 +34,13 @@ def lambda_handler(event, context):
 
 
 def get(req: ProgramItem) -> List[dict]:
-    if req.performer and req.vol:
+    if req.performer_name and req.vol:
         try:
-            program_list = [Program.get(req.performer, req.vol)]
+            program_list = [Program.get(req.performer_name, req.vol)]
         except Program.DoesNotExist:
             return []
-    elif req.performer:
-        program_list = Program.query(req.performer)
+    elif req.performer_name:
+        program_list = Program.query(req.performer_name)
     else:
         program_list = Program.scan()
 
@@ -49,8 +49,8 @@ def get(req: ProgramItem) -> List[dict]:
 
 def post(req: ProgramItem) -> dict:
     try:
-        if req.performer and req.vol:
-            program = Program.get(req.performer, req.vol)
+        if req.performer_name and req.vol:
+            program = Program.get(req.performer_name, req.vol)
             program.old_vol = req.old_vol
         else:
             return {}

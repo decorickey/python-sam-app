@@ -31,6 +31,13 @@ sam local invoke --docker-network python-sam-app_default BmonsterScheduleApiFunc
 sam local start-api --docker-network python-sam-app_default
 ```
 
+### BmonsterPerformerApiFunction
+
+```shell
+sam local invoke --docker-network python-sam-app_default BmonsterPerformerApiFunction -e events/event.json
+sam local start-api --docker-network python-sam-app_default
+```
+
 ### BmonsterProgramApiFunction
 
 ```shell

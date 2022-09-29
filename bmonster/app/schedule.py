@@ -27,13 +27,13 @@ def lambda_handler(event, context):
 
 
 def get(req: ProgramItem) -> List[dict]:
-    if req.performer and req.vol:
+    if req.performer_name and req.vol:
         try:
-            schedule_list = [Schedule.get(req.performer, req.vol)]
+            schedule_list = [Schedule.get(req.performer_name, req.vol)]
         except Schedule.DoesNotExist:
             return []
-    elif req.performer:
-        schedule_list = Schedule.query(req.performer)
+    elif req.performer_name:
+        schedule_list = Schedule.query(req.performer_name)
     else:
         schedule_list = Schedule.scan()
 

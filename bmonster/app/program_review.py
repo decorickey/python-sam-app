@@ -38,9 +38,9 @@ def get(req: ProgramReviewRequest) -> List[dict]:
 
     if not ProgramReview.exists():
         return []
-    if req.performer and req.vol:
+    if req.performer_name and req.vol:
         try:
-            program_review_list = [ProgramReview.get(req.performer, req.vol)]
+            program_review_list = [ProgramReview.get(req.performer_name, req.vol)]
         except ProgramReview.DoesNotExist:
             return []
     else:
@@ -53,7 +53,7 @@ def post(req: ProgramReviewRequest) -> dict:
     ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
 
     try:
-        Program.get(req.performer, req.vol)
+        Program.get(req.performer_name, req.vol)
     except Program.DoesNotExist:
         return {}
 
@@ -61,10 +61,10 @@ def post(req: ProgramReviewRequest) -> dict:
         ProgramReview.create_table()
 
     try:
-        program_review = ProgramReview.get(req.performer, req.vol)
+        program_review = ProgramReview.get(req.performer_name, req.vol)
         program_review.star = req.star
     except ProgramReview.DoesNotExist:
-        program_review = ProgramReview(performer=req.performer, vol=req.vol, star=req.star)
+        program_review = ProgramReview(req.performer_name, req.vol, star=req.star)
 
     program_review.save()
     return ProgramReviewResponse.from_orm(program_review).dict()
