@@ -37,3 +37,12 @@ sam build BmonsterProgramApiFunction
 sam local invoke --docker-network python-sam-app_default BmonsterProgramApiFunction -e events/event.json
 sam local start-api --docker-network python-sam-app_default
 ```
+
+### BmonsterProgramReviewApiFunction
+
+```shell
+sam build BmonsterProgramReviewApiFunction
+sam local invoke --docker-network python-sam-app_default BmonsterProgramReviewApiFunction -e events/BmonsterProgramReviewApiFunction/getEvent.json
+sam local invoke --docker-network python-sam-app_default BmonsterProgramReviewApiFunction -e events/BmonsterProgramReviewApiFunction/postEvent.json
+sam local start-api --docker-network python-sam-app_default
+```

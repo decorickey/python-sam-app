@@ -99,6 +99,28 @@ Resources:
             Path: /bmonster/program
             Method: get
 
+  BmonsterProgramReviewApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.program_review.lambda_handler
+      Layers:
+        - !Ref RequirementsLayer
+      Timeout: 30
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: /bmonster/programReview
+            Method: get
+        Post:
+          Type: Api
+          Properties:
+            Path: /bmonster/programReview
+            Method: post
+
 Outputs:
   BmonsterApi:
     Description: "API Gateway endpoint URL for Prod stage for b-monster function"
@@ -121,3 +143,9 @@ Outputs:
   BmonsterProgramApiFunctionIamRole:
     Description: "Implicit IAM Role created for b-monster function"
     Value: !GetAtt BmonsterProgramApiFunctionRole.Arn
+  BmonsterProgramReviewApiFunction:
+    Description: "b-monster Lambda Function ARN"
+    Value: !GetAtt BmonsterProgramReviewApiFunction.Arn
+  BmonsterProgramReviewApiFunctionIamRole:
+    Description: "Implicit IAM Role created for b-monster function"
+    Value: !GetAtt BmonsterProgramReviewApiFunctionRole.Arn

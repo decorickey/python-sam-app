@@ -18,3 +18,19 @@ class ProgramItem(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ProgramReviewRequest(BaseModel):
+    user_id: str
+    performer: Optional[str] = None
+    vol: Optional[str] = None
+    star: Optional[int] = None
+
+
+class ProgramReviewResponse(BaseModel):
+    performer: Optional[str] = None
+    vol: Optional[str] = None
+    star: Optional[int] = None
+
+    class Config:
+        orm_mode = True

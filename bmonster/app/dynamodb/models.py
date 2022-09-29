@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta
 
-from pynamodb.attributes import ListAttribute, TTLAttribute, UnicodeAttribute
+from pynamodb.attributes import ListAttribute, NumberAttribute, TTLAttribute, UnicodeAttribute
 from pynamodb.models import Model
 
 from ..common.constants import JST
@@ -17,9 +17,6 @@ def dynamodb_migrate():
     # スケジュールは毎回最新化する
     Schedule.delete_table()
     Schedule.create_table()
-
-    # if not ProgramReviewIndex.exists():
-    #     ProgramReviewIndex.create_table()
 
 
 class BaseMeta:
@@ -58,10 +55,10 @@ class Schedule(Model):
     ttl = TTLAttribute(default=datetime.now(JST) + timedelta(days=7))
 
 
-# class ProgramReview(Model):
-#     class Meta(BaseMeta):
-#         table_name = 'program_review'
-#
-#     performer = UnicodeAttribute(hash_key=True)
-#     vol = UnicodeAttribute(range_key=True)
-#     star = NumberAttribute()
+class ProgramReview(Model):
+    class Meta(BaseMeta):
+        table_name = 'program_review'
+
+    performer = UnicodeAttribute(hash_key=True)
+    vol = UnicodeAttribute(range_key=True)
+    star = NumberAttribute()
