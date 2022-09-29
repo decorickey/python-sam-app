@@ -5,7 +5,7 @@
   "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "id": "aaa"
+    "user_id": "aaa"
   },
   "pathParameters": {
     "proxy": "/path/to/resource"

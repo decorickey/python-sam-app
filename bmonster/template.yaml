@@ -39,7 +39,7 @@ Globals:
         BILLING_MODE: !FindInMap [!Ref Env, Aws, DynamoDBBillingMode]
 
 Resources:
-  RequirementsLayer:
+  BmonsterRequirementsLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: requirements/
@@ -55,7 +55,7 @@ Resources:
       CodeUri: ./
       Handler: app.scraping.lambda_handler
       Layers:
-        - !Ref RequirementsLayer
+        - !Ref BmonsterRequirementsLayer
       Timeout: 300
       Policies:
         - AmazonDynamoDBFullAccess
@@ -71,7 +71,7 @@ Resources:
       CodeUri: ./
       Handler: app.schedule.lambda_handler
       Layers:
-        - !Ref RequirementsLayer
+        - !Ref BmonsterRequirementsLayer
       Timeout: 30
       Policies:
         - AmazonDynamoDBFullAccess
@@ -88,7 +88,7 @@ Resources:
       CodeUri: ./
       Handler: app.program.lambda_handler
       Layers:
-        - !Ref RequirementsLayer
+        - !Ref BmonsterRequirementsLayer
       Timeout: 30
       Policies:
         - AmazonDynamoDBFullAccess
@@ -105,7 +105,7 @@ Resources:
       CodeUri: ./
       Handler: app.program_review.lambda_handler
       Layers:
-        - !Ref RequirementsLayer
+        - !Ref BmonsterRequirementsLayer
       Timeout: 30
       Policies:
         - AmazonDynamoDBFullAccess
