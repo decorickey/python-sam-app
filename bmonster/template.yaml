@@ -98,6 +98,11 @@ Resources:
           Properties:
             Path: /bmonster/program
             Method: get
+        Post:
+          Type: Api
+          Properties:
+            Path: /bmonster/program
+            Method: post
 
   BmonsterProgramReviewApiFunction:
     Type: AWS::Serverless::Function

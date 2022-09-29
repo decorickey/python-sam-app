@@ -42,6 +42,7 @@ class Program(Model):
 
     performer = UnicodeAttribute(hash_key=True)
     vol = UnicodeAttribute(range_key=True)
+    old_vol = UnicodeAttribute()
     ttl = TTLAttribute(default=datetime.now(JST) + timedelta(days=365))
 
 
