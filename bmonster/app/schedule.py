@@ -2,7 +2,7 @@ import json
 from datetime import timedelta, timezone
 from typing import List
 
-from .api.schemas import ProgramItem, ScheduleResponse
+from .api.schemas import ScheduleRequest, ScheduleResponse
 from .dynamodb.models import Schedule
 
 JST = timezone(timedelta(hours=9))
@@ -14,27 +14,22 @@ def lambda_handler(event, context):
     query_params = event['queryStringParameters'] or {}
 
     if http_method == 'GET':
-        res = get(ProgramItem(**query_params))
+        results: List[ScheduleResponse] = get(ScheduleRequest(**query_params))
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps([result.dict() for result in results])
         }
     else:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({})
-        }
+        return {"statusCode": 400}
 
 
-def get(req: ProgramItem) -> List[dict]:
+def get(req: ScheduleRequest) -> List[ScheduleResponse]:
     if req.performer_name and req.vol:
         try:
-            schedule_list = [Schedule.get(req.performer_name, req.vol)]
+            return [ScheduleResponse.from_orm(Schedule.get(req.performer_name, req.vol))]
         except Schedule.DoesNotExist:
             return []
     elif req.performer_name:
-        schedule_list = Schedule.query(req.performer_name)
+        return [ScheduleResponse.from_orm(schedule) for schedule in Schedule.query(req.performer_name)]
     else:
-        schedule_list = Schedule.scan()
-
-    return [ScheduleResponse.from_orm(schedule).dict() for schedule in schedule_list]
+        return [ScheduleResponse.from_orm(schedule) for schedule in Schedule.scan()]

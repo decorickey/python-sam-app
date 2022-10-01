@@ -15,22 +15,18 @@ def lambda_handler(event, context):
     body = json.loads(event['body']) if event['body'] else {}
 
     if http_method == 'GET':
-        res = get()
+        results: List[PerformerResponse] = get()
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps([result.dict() for result in results])
         }
     else:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({})
-        }
+        return {"statusCode": 400}
 
 
-def get() -> List[dict]:
+def get() -> List[PerformerResponse]:
     try:
-        performer_list = Performer.scan()
-        return [PerformerResponse.from_orm(performer).dict() for performer in performer_list]
+        return [PerformerResponse.from_orm(performer) for performer in Performer.scan()]
     except Performer.DoesNotExist:
         return []
 

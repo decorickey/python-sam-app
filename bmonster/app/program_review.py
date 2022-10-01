@@ -15,47 +15,42 @@ def lambda_handler(event, context):
     body = json.loads(event['body']) if event['body'] else {}
 
     if http_method == 'GET':
-        res = get(ProgramReviewRequest(**query_params))
+        results: List[ProgramReviewResponse] = get(ProgramReviewRequest(**query_params))
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps([result.dict() for result in results])
         }
     elif http_method == 'POST':
-        res = post(ProgramReviewRequest(**body))
+        result: ProgramReviewResponse = post(ProgramReviewRequest(**body))
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps(result.dict())
         }
     else:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({})
-        }
+        return {"statusCode": 400}
 
 
-def get(req: ProgramReviewRequest) -> List[dict]:
+def get(req: ProgramReviewRequest) -> List[ProgramReviewResponse]:
     ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
 
     if not ProgramReview.exists():
         return []
     if req.performer_name and req.vol:
         try:
-            program_review_list = [ProgramReview.get(req.performer_name, req.vol)]
+            return [ProgramReviewResponse.from_orm(ProgramReview.get(req.performer_name, req.vol))]
         except ProgramReview.DoesNotExist:
             return []
     else:
-        program_review_list = ProgramReview.scan()
-
-    return [ProgramReviewResponse.from_orm(program_review).dict() for program_review in program_review_list]
+        return [ProgramReviewResponse.from_orm(program_review) for program_review in ProgramReview.scan()]
 
 
-def post(req: ProgramReviewRequest) -> dict:
+def post(req: ProgramReviewRequest) -> ProgramReviewResponse:
     ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
 
     try:
         Program.get(req.performer_name, req.vol)
     except Program.DoesNotExist:
-        return {}
+        return None
 
     if not ProgramReview.exists():
         ProgramReview.create_table()
@@ -67,4 +62,4 @@ def post(req: ProgramReviewRequest) -> dict:
         program_review = ProgramReview(req.performer_name, req.vol, star=req.star)
 
     program_review.save()
-    return ProgramReviewResponse.from_orm(program_review).dict()
+    return ProgramReviewResponse.from_orm(program_review)

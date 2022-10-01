@@ -2,7 +2,7 @@ import json
 from datetime import timedelta, timezone
 from typing import List
 
-from .api.schemas import ProgramItem
+from .api.schemas import ProgramRequest, ProgramResponse
 from .dynamodb.models import Program
 
 JST = timezone(timedelta(hours=9))
@@ -15,47 +15,42 @@ def lambda_handler(event, context):
     body = json.loads(event['body']) if event['body'] else {}
 
     if http_method == 'GET':
-        res = get(ProgramItem(**query_params))
+        results: List[ProgramResponse] = get(ProgramRequest(**query_params))
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps([result.dict() for result in results])
         }
     elif http_method == 'POST':
-        res = post(ProgramItem(**body))
+        result: ProgramResponse = post(ProgramRequest(**body))
         return {
             "statusCode": 200,
-            "body": json.dumps(res)
+            "body": json.dumps(result.dict())
         }
     else:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({})
-        }
+        return {"statusCode": 400}
 
 
-def get(req: ProgramItem) -> List[dict]:
+def get(req: ProgramRequest) -> List[ProgramResponse]:
     if req.performer_name and req.vol:
         try:
-            program_list = [Program.get(req.performer_name, req.vol)]
+            return [ProgramResponse.from_orm(Program.get(req.performer_name, req.vol))]
         except Program.DoesNotExist:
             return []
     elif req.performer_name:
-        program_list = Program.query(req.performer_name)
+        return [ProgramResponse.from_orm(program) for program in Program.query(req.performer_name)]
     else:
-        program_list = Program.scan()
-
-    return [ProgramItem.from_orm(program).dict() for program in program_list]
+        return [ProgramResponse.from_orm(program) for program in Program.scan()]
 
 
-def post(req: ProgramItem) -> dict:
+def post(req: ProgramRequest) -> ProgramResponse:
     try:
         if req.performer_name and req.vol:
             program = Program.get(req.performer_name, req.vol)
             program.old_vol = req.old_vol
         else:
-            return {}
+            return None
     except Program.DoesNotExist:
         program = Program(**req.__dict__)
 
     program.save()
-    return ProgramItem.from_orm(program).dict()
+    return ProgramResponse.from_orm(program)
