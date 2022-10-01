@@ -25,9 +25,15 @@ class PerformerResponse(BaseModel):
         orm_mode = True
 
 
-class ProgramRequest(BaseModel):
+class ProgramGetRequest(BaseModel):
     performer_name: Optional[str] = None
     vol: Optional[str] = None
+    old_vol: Optional[str] = None
+
+
+class ProgramPostRequest(BaseModel):
+    performer_name: str
+    vol: str
     old_vol: Optional[str] = None
 
 
@@ -40,16 +46,23 @@ class ProgramResponse(BaseModel):
         orm_mode = True
 
 
-class ProgramReviewRequest(BaseModel):
+class ProgramReviewGetRequest(BaseModel):
     user_id: str
     performer_name: Optional[str] = None
     vol: Optional[str] = None
     star: Optional[int] = None
 
 
+class ProgramReviewPostRequest(BaseModel):
+    user_id: str
+    performer_name: str
+    vol: str
+    star: Optional[int] = None
+
+
 class ProgramReviewResponse(BaseModel):
-    performer_name: Optional[str] = None
-    vol: Optional[str] = None
+    performer_name: str
+    vol: str
     star: Optional[int] = None
 
     class Config:

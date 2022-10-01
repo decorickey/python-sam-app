@@ -2,8 +2,8 @@ import json
 from datetime import timedelta, timezone
 from typing import List
 
-from .api.schemas import ProgramReviewRequest, ProgramReviewResponse
-from .dynamodb.models import Program, ProgramReview
+from .api.schemas import ProgramReviewGetRequest, ProgramReviewPostRequest, ProgramReviewResponse
+from .dynamodb.models import ProgramReview
 
 JST = timezone(timedelta(hours=9))
 
@@ -15,13 +15,13 @@ def lambda_handler(event, context):
     body = json.loads(event['body']) if event['body'] else {}
 
     if http_method == 'GET':
-        results: List[ProgramReviewResponse] = get(ProgramReviewRequest(**query_params))
+        results: List[ProgramReviewResponse] = get(ProgramReviewGetRequest(**query_params))
         return {
             "statusCode": 200,
             "body": json.dumps([result.dict() for result in results])
         }
     elif http_method == 'POST':
-        result: ProgramReviewResponse = post(ProgramReviewRequest(**body))
+        result: ProgramReviewResponse = post(ProgramReviewPostRequest(**body))
         return {
             "statusCode": 200,
             "body": json.dumps(result.dict())
@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         return {"statusCode": 400}
 
 
-def get(req: ProgramReviewRequest) -> List[ProgramReviewResponse]:
+def get(req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
     ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
 
     if not ProgramReview.exists():
@@ -44,13 +44,8 @@ def get(req: ProgramReviewRequest) -> List[ProgramReviewResponse]:
         return [ProgramReviewResponse.from_orm(program_review) for program_review in ProgramReview.scan()]
 
 
-def post(req: ProgramReviewRequest) -> ProgramReviewResponse:
+def post(req: ProgramReviewPostRequest) -> ProgramReviewResponse:
     ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
-
-    try:
-        Program.get(req.performer_name, req.vol)
-    except Program.DoesNotExist:
-        return None
 
     if not ProgramReview.exists():
         ProgramReview.create_table()
