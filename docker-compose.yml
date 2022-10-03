@@ -9,3 +9,20 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+
+  fastapi-app:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    environment:
+      ENV: local
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      REGION: ap-northeast-1
+      DYNAMODB_HOST: http://dynamodb-local:8000
+      BILLING_MODE: PAY_PER_REQUEST
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dynamodb-local

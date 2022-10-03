@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ScheduleRequest(BaseModel):
@@ -12,7 +12,7 @@ class ScheduleRequest(BaseModel):
 class ScheduleResponse(BaseModel):
     performer_name: str
     vol: str
-    scheduleList: Optional[list[dict]] = Field(..., alias="schedule_list")
+    schedule_list: Optional[list[dict]] = None
 
     class Config:
         orm_mode = True
@@ -28,7 +28,6 @@ class PerformerResponse(BaseModel):
 class ProgramGetRequest(BaseModel):
     performer_name: Optional[str] = None
     vol: Optional[str] = None
-    old_vol: Optional[str] = None
 
 
 class ProgramPostRequest(BaseModel):
