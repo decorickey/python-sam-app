@@ -46,13 +46,11 @@ class ProgramResponse(BaseModel):
 
 
 class ProgramReviewGetRequest(BaseModel):
-    user_id: str
     performer_name: Optional[str] = None
     vol: Optional[str] = None
 
 
 class ProgramReviewPostRequest(BaseModel):
-    user_id: str
     performer_name: str
     vol: str
     star: Optional[int] = None

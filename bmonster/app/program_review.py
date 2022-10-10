@@ -14,14 +14,20 @@ def lambda_handler(event, context):
     query_params = event['queryStringParameters'] or {}
     body = json.loads(event['body']) if event['body'] else {}
 
+    user_id = headers["authorization"]
     if http_method == 'GET':
-        results: List[ProgramReviewResponse] = get(ProgramReviewGetRequest(**query_params))
+        results: List[ProgramReviewResponse] = get(
+            user_id,ProgramReviewGetRequest(**query_params)
+        )
         return {
             "statusCode": 200,
             "body": json.dumps([result.dict() for result in results])
         }
     elif http_method == 'POST':
-        result: ProgramReviewResponse = post(ProgramReviewPostRequest(**body))
+        result: ProgramReviewResponse = post(
+            user_id,
+            ProgramReviewPostRequest(**body)
+        )
         return {
             "statusCode": 200,
             "body": json.dumps(result.dict())
@@ -30,8 +36,8 @@ def lambda_handler(event, context):
         return {"statusCode": 400}
 
 
-def get(req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
-    ProgramReview.Meta.table_name = ProgramReview.create_table_name(req.user_id)
+def get(user_id: str, req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
+    ProgramReview.Meta.table_name = ProgramReview.create_table_name(user_id)
 
     if not ProgramReview.exists():
         print(ProgramReview.Meta.table_name)
@@ -45,8 +51,8 @@ def get(req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
         return [ProgramReviewResponse.from_orm(program_review) for program_review in ProgramReview.scan()]
 
 
-def post(req: ProgramReviewPostRequest) -> ProgramReviewResponse:
-    ProgramReview.Meta.table_name = ProgramReview.create_table_name(req.user_id)
+def post(user_id:str, req: ProgramReviewPostRequest) -> ProgramReviewResponse:
+    ProgramReview.Meta.table_name = ProgramReview.create_table_name(user_id)
 
     if not ProgramReview.exists():
         ProgramReview.create_table()
