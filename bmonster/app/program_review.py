@@ -31,9 +31,10 @@ def lambda_handler(event, context):
 
 
 def get(req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
-    ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
+    ProgramReview.Meta.table_name = ProgramReview.create_table_name(req.user_id)
 
     if not ProgramReview.exists():
+        print(ProgramReview.Meta.table_name)
         return []
     if req.performer_name and req.vol:
         try:
@@ -45,7 +46,7 @@ def get(req: ProgramReviewGetRequest) -> List[ProgramReviewResponse]:
 
 
 def post(req: ProgramReviewPostRequest) -> ProgramReviewResponse:
-    ProgramReview.Meta.table_name = f"{ProgramReview.Meta.table_name}_{req.user_id}"
+    ProgramReview.Meta.table_name = ProgramReview.create_table_name(req.user_id)
 
     if not ProgramReview.exists():
         ProgramReview.create_table()

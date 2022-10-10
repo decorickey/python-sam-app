@@ -58,6 +58,10 @@ class Schedule(Model):
 
 
 class ProgramReview(Model):
+    @staticmethod
+    def create_table_name(user_id: str):
+        return f"program_review_{user_id}"
+
     class Meta(BaseMeta):
         table_name = 'program_review'
 

@@ -49,7 +49,6 @@ class ProgramReviewGetRequest(BaseModel):
     user_id: str
     performer_name: Optional[str] = None
     vol: Optional[str] = None
-    star: Optional[int] = None
 
 
 class ProgramReviewPostRequest(BaseModel):
